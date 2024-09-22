@@ -65,7 +65,7 @@ class Brax(Problem):
         key, eval_key = jax.random.split(state.key)
 
         def _cond_func(carry):
-            counter, state, prev_done, _total_reward = carry
+            counter, brax_state, prev_done, total_reward = carry
             return (counter < self.max_episode_length) & (~prev_done.all())
 
         def _body_func(carry):
