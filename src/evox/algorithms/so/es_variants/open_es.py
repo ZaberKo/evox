@@ -73,10 +73,10 @@ class OpenES(Algorithm):
         return population, state.replace(population=population, key=key, noise=noise)
 
     def tell(self, state, fitness):
-        grad = state.noise.T @ fitness / self.pop_size / self.noise_stdev
+        grad = state.noise.T @ fitness / (self.pop_size * self.noise_stdev)
         if self.optimizer is None:
             center = state.center - self.learning_rate * grad
         else:
-            updates, state = use_state(self.optimizer.update)(state, state.center)
+            updates, state = use_state(self.optimizer.update)(state, grad)
             center = optax.apply_updates(state.center, updates)
         return state.replace(center=center)
