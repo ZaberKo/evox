@@ -170,7 +170,7 @@ class State:
             find the state for the module with the specified node_id
         module_name: str
             An optional module name if available
-            
+
         Returns
         -------
         path: str
@@ -197,6 +197,13 @@ class State:
                 return child_name, state
 
         return "", None
+
+    def __contains__(self, key: str) -> bool:
+        if dataclasses.is_dataclass(self._state_dict):
+            field_names = {field.name for field in dataclasses.fields(self._state_dict)}
+            return key in field_names
+        else:
+            return key in self._state_dict
 
     def __getattr__(self, key: str) -> Any:
         if is_magic_method(key):

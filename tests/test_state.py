@@ -1,7 +1,7 @@
 import chex
 import jax
 import pytest
-from evox import Stateful, State, use_state
+from evox import Stateful, State, use_state, dataclass
 from jax.tree_util import tree_map
 
 
@@ -108,3 +108,22 @@ def test_jax_pytree():
     module = Root()
     state = module.init(key=jax.random.PRNGKey(0))
     assert state == tree_map(lambda x: x, state)
+
+def test_contains():
+    module = Root()
+    state = module.init(key=jax.random.PRNGKey(0))
+    assert "attr_a" in state
+    assert "attr_b" in state
+    assert "a" not in state
+    assert "c" not in state
+    assert "d" not in state
+
+    @dataclass
+    class FooState:
+        a: int
+        b: str
+
+    foo = State(FooState(a=1, b="hello"))
+    assert "a" in foo
+    assert "b" in foo
+    assert "c" not in foo
