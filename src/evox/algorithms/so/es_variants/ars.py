@@ -76,7 +76,7 @@ class ARS(evox.Algorithm):
         fit_diff_noise = jnp.dot(noise_1[elite_idx].T, fit_diff)
         theta_grad = 1.0 / (self.elite_pop_size * sigma_fitness) * fit_diff_noise
 
-        updates, state = self.optimizer.update(state, theta_grad, state.center)
+        updates, state = evox.use_state(self.optimizer.update)(state, theta_grad, state.center)
         center = optax.apply_updates(state.center, updates)
 
         return state.replace(center=center)
